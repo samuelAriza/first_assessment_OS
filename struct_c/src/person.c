@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <string.h>
-#include "person.h"
+#include "../include/person.h"
 #include <stdlib.h>
 #include <time.h>
 

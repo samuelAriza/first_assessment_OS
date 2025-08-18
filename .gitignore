@@ -1,2 +1,5 @@
 /generador
 .vscode
+/benchmarks
+*.o
+*.log

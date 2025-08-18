@@ -1,7 +1,7 @@
 CC = gcc
 CFLAGS = -Wall -Wextra -Iinclude -O2
 
-SRC = src/generator.c src/person.c main.c
+SRC = src/generator.c src/person.c src/queries.c main.c
 OBJ = $(SRC:.c=.o)
 BIN = main
 

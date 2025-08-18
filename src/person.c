@@ -86,4 +86,5 @@ void show(const Person *p)
     printf("   - Heritage: $%.2f\n", p->heritage);
     printf("   - Debts: $%.2f\n", p->debts);
     printf("   - Tax group: %c\n", p->taxGroup);
+    fflush(stdout);
 }

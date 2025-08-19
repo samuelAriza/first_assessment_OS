@@ -1,118 +1,141 @@
 #include "generador.h"
-#include <cstdlib>   // rand(), srand()
-#include <ctime>     // time()
-#include <random>    // Generadores aleatorios modernos
+#include <cstdlib> // rand(), srand()
+#include <ctime>   // time()
+#include <random>  // Modern random generators
 #include <vector>
-#include <algorithm> // Para find_if
+#include <algorithm> // For find_if
 
-// --- Bases de datos para generación realista ---
+// --- Databases for realistic generation ---
 
-// Nombres femeninos comunes en Colombia
+/// Common female names in Colombia.
 const std::vector<std::string> nombresFemeninos = {
     "María", "Luisa", "Carmen", "Ana", "Sofía", "Isabel", "Laura", "Andrea", "Paula", "Valentina",
-    "Camila", "Daniela", "Carolina", "Fernanda", "Gabriela", "Patricia", "Claudia", "Diana", "Lucía", "Ximena"
-};
+    "Camila", "Daniela", "Carolina", "Fernanda", "Gabriela", "Patricia", "Claudia", "Diana", "Lucía", "Ximena"};
 
-// Nombres masculinos comunes en Colombia
+/// Common male names in Colombia.
 const std::vector<std::string> nombresMasculinos = {
     "Juan", "Carlos", "José", "James", "Andrés", "Miguel", "Luis", "Pedro", "Alejandro", "Ricardo",
     "Felipe", "David", "Jorge", "Santiago", "Daniel", "Fernando", "Diego", "Rafael", "Martín", "Óscar",
-    "Edison", "Sofia","Camila","Juana","Ana","Laura","Karla","Andrea","Daniela","Alejandra","Martina",
-    "Nelly","María","Nestor","Trinidad","Fernanda", "Carolina", "Lina", "Gertridis"
-};
+    "Edison", "Sofia", "Camila", "Juana", "Ana", "Laura", "Karla", "Andrea", "Daniela", "Alejandra", "Martina",
+    "Nelly", "María", "Nestor", "Trinidad", "Fernanda", "Carolina", "Lina", "Gertridis"};
 
-// Apellidos comunes en Colombia
+/// Common last names in Colombia.
 const std::vector<std::string> apellidos = {
-    "Gómez", "Rodríguez", "Martínez", "López", "García", "Pérez", "González", "Sánchez", "Ramírez", "Torres",
-    "Díaz", "Vargas", "Castro", "Ruiz", "Álvarez", "Romero", "Suárez", "Rojas", "Moreno", "Muñoz", "Valencia",
+    "Gómez",
+    "Rodríguez",
+    "Martínez",
+    "López",
+    "García",
+    "Pérez",
+    "González",
+    "Sánchez",
+    "Ramírez",
+    "Torres",
+    "Díaz",
+    "Vargas",
+    "Castro",
+    "Ruiz",
+    "Álvarez",
+    "Romero",
+    "Suárez",
+    "Rojas",
+    "Moreno",
+    "Muñoz",
+    "Valencia",
 };
 
-// Principales ciudades colombianas
+/// Main Colombian cities.
 const std::vector<std::string> ciudadesColombia = {
     "Bogotá", "Medellín", "Cali", "Barranquilla", "Cartagena", "Bucaramanga", "Pereira", "Santa Marta", "Cúcuta", "Ibagué",
-    "Manizales", "Pasto", "Neiva", "Villavicencio", "Armenia", "Sincelejo", "Valledupar", "Montería", "Popayán", "Tunja"
-};
+    "Manizales", "Pasto", "Neiva", "Villavicencio", "Armenia", "Sincelejo", "Valledupar", "Montería", "Popayán", "Tunja"};
 
-// Implementación de funciones generadoras
+// --- Generator function implementations ---
 
-std::string generarFechaNacimiento() {
-    // Genera día aleatorio (1-28 para simplificar)
+std::string generarFechaNacimiento()
+{
+    /// Generates a random day (1-28 for simplification).
     int dia = 1 + rand() % 28;
-    // Mes aleatorio (1-12)
+    /// Random month (1-12).
     int mes = 1 + rand() % 12;
-    // Año entre 1960-2010
+    /// Year between 1960-2010.
     int anio = 1960 + rand() % 50;
-    
-    // Convierte a string en formato DD/MM/AAAA
+
+    /// Converts to string in DD/MM/YYYY format.
     return std::to_string(dia) + "/" + std::to_string(mes) + "/" + std::to_string(anio);
 }
 
-std::string generarID() {
-    static long contador = 1000000000; // ID inicial
-    return std::to_string(contador++); // Incrementa después de usar
+std::string generarID()
+{
+    static long contador = 1000000000; ///< Initial ID.
+    return std::to_string(contador++); ///< Increment after use.
 }
 
-double randomDouble(double min, double max) {
-    // Generador moderno Mersenne Twister
+double randomDouble(double min, double max)
+{
+    /// Modern Mersenne Twister generator.
     static std::mt19937 generator(time(nullptr));
-    // Distribución uniforme en rango [min, max]
+    /// Uniform distribution in range [min, max].
     std::uniform_real_distribution<double> distribution(min, max);
     return distribution(generator);
 }
 
-Persona generarPersona() {
-    // Decide aleatoriamente si es hombre o mujer
+Persona generarPersona()
+{
+    /// Randomly decide gender.
     bool esHombre = rand() % 2;
-    
-    // Selecciona nombre según género
-    std::string nombre = esHombre ? 
-        nombresMasculinos[rand() % nombresMasculinos.size()] :
-        nombresFemeninos[rand() % nombresFemeninos.size()];
-    
-    // Combina dos apellidos aleatorios
-    std::string apellido = apellidos[rand() % apellidos.size()] + " " + 
+
+    /// Select name based on gender.
+    std::string nombre = esHombre ? nombresMasculinos[rand() % nombresMasculinos.size()] : nombresFemeninos[rand() % nombresFemeninos.size()];
+
+    /// Combine two random last names.
+    std::string apellido = apellidos[rand() % apellidos.size()] + " " +
                            apellidos[rand() % apellidos.size()];
-    
-    // Genera identificadores únicos
+
+    /// Generate unique identifiers.
     std::string id = generarID();
-    // Ciudad aleatoria de Colombia
+    /// Random city from Colombia.
     std::string ciudad = ciudadesColombia[rand() % ciudadesColombia.size()];
-    // Fecha aleatoria
+    /// Random birth date.
     std::string fecha = generarFechaNacimiento();
-    
-    // --- Generación de datos económicos realistas ---
-    // Ingresos entre 10 millones y 500 millones COP
+
+    // --- Realistic economic data generation ---
+    /// Income between 10 million and 500 million COP.
     double ingresos = randomDouble(10000000, 500000000);
-    // Patrimonio entre 0 y 2 mil millones COP
+    /// Heritage between 0 and 2 billion COP.
     double patrimonio = randomDouble(0, 2000000000);
-    // Deudas hasta el 70% del patrimonio
+    /// Debts up to 70% of heritage.
     double deudas = randomDouble(0, patrimonio * 0.7);
-    // 70% probabilidad de ser declarante si gana > 50 millones
+    /// 70% probability of being a tax declarant if income > 50 million.
     bool declarante = (ingresos > 50000000) && (rand() % 100 > 30);
-    
-    // Construye y retorna objeto Persona
+
+    /// Builds and returns a Persona object.
     return Persona(nombre, apellido, id, ciudad, fecha, ingresos, patrimonio, deudas, declarante);
 }
 
-std::vector<Persona> generarColeccion(int n) {
+std::vector<Persona> generarColeccion(int n)
+{
     std::vector<Persona> personas;
-    // Reserva espacio para n personas (optimización)
+    /// Reserve space for n persons (optimization).
     personas.reserve(n);
-    
-    // Genera n personas y las añade al vector
-    for (int i = 0; i < n; ++i) {
+
+    /// Generate n persons and add them to the vector.
+    for (int i = 0; i < n; ++i)
+    {
         personas.push_back(generarPersona());
     }
-    
+
     return personas;
 }
 
-const Persona* buscarPorID(const std::vector<Persona>& personas, const std::string& id) {
-    // Búsqueda lineal por ID (solución simple para colecciones medianas)
-    for (const auto& persona : personas) {
-        if (persona.getId() == id) {
-            return &persona; // Retorna dirección si encuentra coincidencia
+const Persona *buscarPorID(const std::vector<Persona> &personas, const std::string &id)
+{
+    /// Linear search by ID (simple solution for medium collections).
+    for (const auto &persona : personas)
+    {
+        if (persona.getId() == id)
+        {
+            return &persona; ///< Return address if a match is found.
         }
     }
-    return nullptr; // Retorna nulo si no encuentra
+    return nullptr; ///< Return null if not found.
 }

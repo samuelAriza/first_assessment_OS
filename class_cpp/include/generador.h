@@ -4,25 +4,35 @@
 #include "persona.h"
 #include <vector>
 
-// --- Funciones para generación de datos aleatorios ---
+/// --- Functions for random data generation ---
 
-// Genera fecha aleatoria entre 1960-2010
+/// Generates a random date between 1960-2010.
+/// @return A string representing the generated date.
 std::string generarFechaNacimiento();
 
-// Genera ID único secuencial
+/// Generates a unique sequential ID.
+/// @return A string representing the generated ID.
 std::string generarID();
 
-// Genera número decimal en rango [min, max]
+/// Generates a random decimal number within the range [min, max].
+/// @param min Minimum value.
+/// @param max Maximum value.
+/// @return A random double within the specified range.
 double randomDouble(double min, double max);
 
-// Crea una persona con datos aleatorios
+/// Creates a person with random data.
+/// @return A Persona object with generated attributes.
 Persona generarPersona();
 
-// Genera colección de n personas
+/// Generates a collection of n persons.
+/// @param n Number of persons to generate.
+/// @return A vector containing the generated persons.
 std::vector<Persona> generarColeccion(int n);
 
-// Busca persona por ID en un vector
-// Retorna puntero a persona si la encuentra, nullptr si no
+/// Searches for a person by ID within a vector.
+/// @param personas Vector of persons to search.
+/// @param id The ID to search for.
+/// @return A pointer to the found person, or nullptr if not found.
 const Persona* buscarPorID(const std::vector<Persona>& personas, const std::string& id);
 
 #endif // GENERADOR_H

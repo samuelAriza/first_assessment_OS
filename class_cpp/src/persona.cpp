@@ -1,21 +1,21 @@
 #include "persona.h"
 #include <iostream>
-#include <iomanip>  // Para formato de salida (setprecision, fixed)
-#include <sstream> // Para parseo de strings
+#include <iomanip> // For output formatting (setprecision, fixed)
+#include <sstream> // For string parsing
 
-// Implementación del constructor
-Persona::Persona(std::string nom, std::string ape, std::string id, 
-                 std::string ciudad, std::string fecha, double ingresos, 
+// Constructor implementation
+Persona::Persona(std::string nom, std::string ape, std::string id,
+                 std::string ciudad, std::string fecha, double ingresos,
                  double patri, double deud, bool declara)
     : nombre(nom), apellido(ape), id(id), ciudadNacimiento(ciudad),
       fechaNacimiento(fecha), ingresosAnuales(ingresos), patrimonio(patri),
-      deudas(deud), declaranteRenta(declara) 
+      deudas(deud), declaranteRenta(declara)
 {
-    // Inicialización mediante lista de inicialización para eficiencia
+    // Initialization through initializer list for efficiency
 }
 
-// --- Implementación de getters ---
-// Devuelven valores de campos privados sin permitir modificación (const)
+// --- Getters implementation ---
+// Return private field values without allowing modification (const)
 
 std::string Persona::getNombre() const { return nombre; }
 std::string Persona::getApellido() const { return apellido; }
@@ -27,63 +27,72 @@ double Persona::getPatrimonio() const { return patrimonio; }
 double Persona::getDeudas() const { return deudas; }
 bool Persona::getDeclaranteRenta() const { return declaranteRenta; }
 
-int Persona::getEdad() const {
-    // Parsea fechaNacimiento "DD/MM/AAAA"
+int Persona::getEdad() const
+{
+    // Parse fechaNacimiento "DD/MM/YYYY"
     std::istringstream ss(fechaNacimiento);
     int dia, mes, anio;
     char delim1, delim2;
     ss >> dia >> delim1 >> mes >> delim2 >> anio;
-    if (ss.fail() || delim1 != '/' || delim2 != '/') return -1; // Error si formato inválido
+    if (ss.fail() || delim1 != '/' || delim2 != '/')
+        return -1; // Error if invalid format
 
-    // Fecha fija: 17/08/2025
+    // Fixed date: 17/08/2025
     const int diaActual = 17, mesActual = 8, anioActual = 2025;
     int edad = anioActual - anio;
-    if (mesActual < mes || (mesActual == mes && diaActual < dia)) edad--; // Ajuste cumpleaños
+    if (mesActual < mes || (mesActual == mes && diaActual < dia))
+        edad--; // Adjust for birthday
     return edad;
 }
 
-char Persona::getTaxGroup() const {
-    if (id.length() < 2) return ' '; // Error si ID inválido
+char Persona::getTaxGroup() const
+{
+    if (id.length() < 2)
+        return ' '; // Error if invalid ID
     std::string last2 = id.substr(id.length() - 2);
     int digitos = std::stoi(last2);
-    if (digitos <= 39) return 'A';
-    else if (digitos <= 79) return 'B';
-    else return 'C';
+    if (digitos <= 39)
+        return 'A';
+    else if (digitos <= 79)
+        return 'B';
+    else
+        return 'C';
 }
 
-// En persona.cpp (agrega después de getTaxGroup)
-Persona::Persona() 
-    : nombre(""), apellido(""), id(""), ciudadNacimiento(""), fechaNacimiento(""), 
-      ingresosAnuales(0.0), patrimonio(0.0), deudas(0.0), declaranteRenta(false) 
+// In persona.cpp (added after getTaxGroup)
+Persona::Persona()
+    : nombre(""), apellido(""), id(""), ciudadNacimiento(""), fechaNacimiento(""),
+      ingresosAnuales(0.0), patrimonio(0.0), deudas(0.0), declaranteRenta(false)
 {
-    // Inicialización vacía mediante lista de inicialización
+    // Empty initialization through initializer list
 }
 
-
-// Muestra información detallada de la persona
-void Persona::mostrar() const {
+// Displays detailed information of the person
+void Persona::mostrar() const
+{
     std::cout << "-------------------------------------\n";
-    // Encabezado con ID y nombre completo
-    std::cout << "[" << id << "] Nombre: " << nombre << " " << apellido << "\n";
-    // Datos personales
-    std::cout << "   - Ciudad de nacimiento: " << ciudadNacimiento << "\n";
-    std::cout << "   - Fecha de nacimiento: " << fechaNacimiento << "\n\n";
-    
-    // Formato para valores monetarios (2 decimales)
+    // Header with ID and full name
+    std::cout << "[" << id << "] Name: " << nombre << " " << apellido << "\n";
+    // Personal data
+    std::cout << "   - Birth city: " << ciudadNacimiento << "\n";
+    std::cout << "   - Birth date: " << fechaNacimiento << "\n\n";
+
+    // Format for monetary values (2 decimals)
     std::cout << std::fixed << std::setprecision(2);
-    
-    // Datos económicos
-    std::cout << "   - Ingresos anuales: $" << ingresosAnuales << "\n";
-    std::cout << "   - Patrimonio: $" << patrimonio << "\n";
-    std::cout << "   - Deudas: $" << deudas << "\n";
-    // Operador ternario para mostrar Sí/No según condición booleana
-    std::cout << "   - Declarante de renta: " << (declaranteRenta ? "Sí" : "No") << "\n";
+
+    // Economic data
+    std::cout << "   - Annual income: $" << ingresosAnuales << "\n";
+    std::cout << "   - Net worth: $" << patrimonio << "\n";
+    std::cout << "   - Debts: $" << deudas << "\n";
+    // Ternary operator to show Yes/No depending on boolean condition
+    std::cout << "   - Tax declarant: " << (declaranteRenta ? "Yes" : "No") << "\n";
 }
 
-// Versión compacta para mostrar en listados
-void Persona::mostrarResumen() const {
-    // ID, nombre completo, ciudad e ingresos en una sola línea
+// Compact version for list display
+void Persona::mostrarResumen() const
+{
+    // ID, full name, city, and income in a single line
     std::cout << "[" << id << "] " << nombre << " " << apellido
-              << " | " << ciudadNacimiento 
+              << " | " << ciudadNacimiento
               << " | $" << std::fixed << std::setprecision(2) << ingresosAnuales;
 }

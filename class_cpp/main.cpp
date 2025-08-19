@@ -10,7 +10,7 @@
 
 int main()
 {
-    size_t sizes[] = {10000};
+    size_t sizes[] = {10000, 1000000, 5000000};
     size_t n_sizes = sizeof(sizes) / sizeof(sizes[0]);
 
     BenchmarkResult results[1000];

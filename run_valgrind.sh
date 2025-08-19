@@ -37,5 +37,3 @@ echo "==== Resumen ===="
 echo "Memcheck: $OUT_DIR/memcheck_struct.log y memcheck_class.log"
 echo "Massif:   $OUT_DIR/massif_struct.txt y massif_class.txt"
 echo "DHAT:     $OUT_DIR/dhat_struct.out y dhat_class.out (ver con dh_view.html si lo deseas)"
-
-

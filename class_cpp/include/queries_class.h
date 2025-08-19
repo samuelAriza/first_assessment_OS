@@ -1,169 +1,153 @@
 #ifndef QUERIES_CLASS_H
 #define QUERIES_CLASS_H
 
-#include <cstddef>  // Para size_t
+#include <cstddef> // For size_t
 #include "persona.h"
 
 /**
  * @file queries_class.h
- * @brief Funciones de consulta para análisis de personas - Versión C++ Classes
- * 
- * Este archivo contiene todas las funciones de consulta implementadas tanto
- * para modo punteros (_ptr) como modo valores (_val) para facilitar la
- * comparación de rendimiento entre diferentes enfoques de acceso a memoria.
+ * @brief Query functions for people analysis - C++ Classes version.
+ *
+ * This file contains all query functions implemented both in
+ * pointer mode (_ptr) and value mode (_val) to facilitate
+ * performance comparison between different memory access approaches.
  */
 
-// =============================================================================
-// CONSULTAS BÁSICAS - PERSONAS MÁS LONGEVAS
-// =============================================================================
-
 /**
- * @brief Encuentra la persona más longeva del país (modo punteros)
- * @param persons Array de punteros a Persona
- * @param n Número de personas en el array
- * @return Puntero a la persona más longeva, o nullptr si no hay personas
+ * @brief Finds the oldest person in the country (pointer mode).
+ * @param persons Array of Persona objects.
+ * @param n Number of persons in the array.
+ * @return Pointer to the oldest person, or nullptr if no persons exist.
  */
-const Persona* findOldest_ptr(const Persona* persons, size_t n);
+const Persona *findOldest_ptr(const Persona *persons, size_t n);
 
 /**
- * @brief Encuentra la persona más longeva del país (modo valores)
- * @param persons Array de objetos Persona
- * @param n Número de personas en el array
- * @return Copia de la persona más longeva, objeto vacío si no hay personas
+ * @brief Finds the oldest person in the country (value mode).
+ * @param persons Array of Persona objects.
+ * @param n Number of persons in the array.
+ * @return Copy of the oldest person, or an empty object if no persons exist.
  */
 Persona findOldest_val(const Persona persons[], size_t n);
 
 /**
- * @brief Encuentra la persona más longeva por ciudad (modo punteros)
- * @param persons Array de punteros a Persona
- * @param n Número de personas
- * @param cityCount Output: número de ciudades encontradas
- * @return Array de punteros a las personas más longevas por ciudad
- * @note El cliente debe liberar el array devuelto con delete[]
+ * @brief Finds the oldest person by city (pointer mode).
+ * @param persons Array of Persona objects.
+ * @param n Number of persons.
+ * @param cityCount Output: number of cities found.
+ * @return Array of pointers to the oldest persons by city.
+ * @note The client must free the returned array with delete[].
  */
-const Persona** findOldestByCity_ptr(const Persona* persons, size_t n, size_t* cityCount);
+const Persona **findOldestByCity_ptr(const Persona *persons, size_t n, size_t *cityCount);
 
 /**
- * @brief Encuentra la persona más longeva por ciudad (modo valores)
- * @param persons Array de objetos Persona
- * @param n Número de personas
- * @param cityCount Output: número de ciudades encontradas
- * @return Array de objetos Persona con las personas más longevas por ciudad
- * @note El cliente debe liberar el array devuelto con delete[]
+ * @brief Finds the oldest person by city (value mode).
+ * @param persons Array of Persona objects.
+ * @param n Number of persons.
+ * @param cityCount Output: number of cities found.
+ * @return Array of Persona objects with the oldest persons by city.
+ * @note The client must free the returned array with delete[].
  */
-Persona* findOldestByCity_val(const Persona persons[], size_t n, size_t* cityCount);
-
-// =============================================================================
-// CONSULTAS DE PATRIMONIO - PERSONAS MÁS RICAS
-// =============================================================================
+Persona *findOldestByCity_val(const Persona persons[], size_t n, size_t *cityCount);
 
 /**
- * @brief Encuentra la persona con mayor patrimonio del país (modo punteros)
+ * @brief Finds the wealthiest person in the country (pointer mode).
  */
-const Persona* findRichest_ptr(const Persona* persons, size_t n);
+const Persona *findRichest_ptr(const Persona *persons, size_t n);
 
 /**
- * @brief Encuentra la persona con mayor patrimonio del país (modo valores)
+ * @brief Finds the wealthiest person in the country (value mode).
  */
 Persona findRichest_val(const Persona persons[], size_t n);
 
 /**
- * @brief Encuentra la persona más rica por ciudad (modo punteros)
+ * @brief Finds the wealthiest person by city (pointer mode).
  */
-const Persona** findRichestByCity_ptr(const Persona* persons, size_t n, size_t* cityCount);
+const Persona **findRichestByCity_ptr(const Persona *persons, size_t n, size_t *cityCount);
 
 /**
- * @brief Encuentra la persona más rica por ciudad (modo valores)
+ * @brief Finds the wealthiest person by city (value mode).
  */
-Persona* findRichestByCity_val(const Persona persons[], size_t n, size_t* cityCount);
+Persona *findRichestByCity_val(const Persona persons[], size_t n, size_t *cityCount);
 
 /**
- * @brief Encuentra la persona más rica por grupo tributario (modo punteros)
- * @param group Grupo tributario ('A', 'B', o 'C')
+ * @brief Finds the wealthiest person by tax group (pointer mode).
+ * @param group Tax group ('A', 'B', or 'C').
  */
-const Persona* findRichestByGroup_ptr(const Persona* persons, size_t n, char group);
+const Persona *findRichestByGroup_ptr(const Persona *persons, size_t n, char group);
 
 /**
- * @brief Encuentra la persona más rica por grupo tributario (modo valores)
- * @param group Grupo tributario ('A', 'B', o 'C')
+ * @brief Finds the wealthiest person by tax group (value mode).
+ * @param group Tax group ('A', 'B', or 'C').
  */
 Persona findRichestByGroup_val(const Persona persons[], size_t n, char group);
 
-// =============================================================================
-// CONSULTAS DE DECLARANTES DE RENTA
-// =============================================================================
-
 /**
- * @brief Lista todos los declarantes de renta por grupo (modo punteros)
- * @param group Grupo tributario a consultar
- * @param count Output: número de declarantes encontrados
+ * @brief Lists all tax declarants by group (pointer mode).
+ * @param group Tax group to query.
+ * @param count Output: number of declarants found.
  */
-const Persona** listTaxGroup_ptr(const Persona* persons, size_t n, char group, size_t* count);
+const Persona **listTaxGroup_ptr(const Persona *persons, size_t n, char group, size_t *count);
 
 /**
- * @brief Lista todos los declarantes de renta por grupo (modo valores)
+ * @brief Lists all tax declarants by group (value mode).
  */
-Persona* listTaxGroup_val(const Persona persons[], size_t n, char group, size_t* count);
+Persona *listTaxGroup_val(const Persona persons[], size_t n, char group, size_t *count);
 
 /**
- * @brief Cuenta los declarantes de renta por grupo (modo punteros)
+ * @brief Counts tax declarants by group (pointer mode).
  */
-size_t countTaxGroup_ptr(const Persona* persons, size_t n, char group);
+size_t countTaxGroup_ptr(const Persona *persons, size_t n, char group);
 
 /**
- * @brief Cuenta los declarantes de renta por grupo (modo valores)
+ * @brief Counts tax declarants by group (value mode).
  */
 size_t countTaxGroup_val(const Persona persons[], size_t n, char group);
 
 /**
- * @brief Valida la asignación de grupo tributario (modo punteros)
- * @return 1 si es válido (A, B, o C), 0 en caso contrario
+ * @brief Validates the tax group assignment (pointer mode).
+ * @return 1 if valid (A, B, or C), 0 otherwise.
  */
-int validateTaxGroup_ptr(const Persona* p);
+int validateTaxGroup_ptr(const Persona *p);
 
 /**
- * @brief Valida la asignación de grupo tributario (modo valores)
+ * @brief Validates the tax group assignment (value mode).
  */
 int validateTaxGroup_val(Persona p);
 
-// =============================================================================
-// CONSULTAS ANALÍTICAS AVANZADAS
-// =============================================================================
-
 /**
- * @brief Encuentra la ciudad con mayor promedio de patrimonio (modo punteros)
- * @return String con el nombre de la ciudad (debe liberarse con delete[])
+ * @brief Finds the city with the highest average heritage (pointer mode).
+ * @return String with the name of the city (must be freed with delete[]).
  */
-const char* cityWithHighestAvgHeritage_ptr(const Persona* persons, size_t n);
+const char *cityWithHighestAvgHeritage_ptr(const Persona *persons, size_t n);
 
 /**
- * @brief Encuentra la ciudad con mayor promedio de patrimonio (modo valores)
+ * @brief Finds the city with the highest average heritage (value mode).
  */
-const char* cityWithHighestAvgHeritage_val(const Persona persons[], size_t n);
+const char *cityWithHighestAvgHeritage_val(const Persona persons[], size_t n);
 
 /**
- * @brief Calcula porcentaje de personas mayores de cierta edad por grupo (modo punteros)
- * @param age Edad mínima para el cálculo
- * @param group Grupo tributario
- * @return Porcentaje (0.0 - 100.0)
+ * @brief Calculates the percentage of people older than a given age by tax group (pointer mode).
+ * @param age Minimum age for calculation.
+ * @param group Tax group.
+ * @return Percentage (0.0 - 100.0).
  */
-double percentageOlderThanByGroup_ptr(const Persona* persons, size_t n, int age, char group);
+double percentageOlderThanByGroup_ptr(const Persona *persons, size_t n, int age, char group);
 
 /**
- * @brief Calcula porcentaje de personas mayores de cierta edad por grupo (modo valores)
+ * @brief Calculates the percentage of people older than a given age by tax group (value mode).
  */
 double percentageOlderThanByGroup_val(const Persona persons[], size_t n, int age, char group);
 
 /**
- * @brief Calcula la riqueza neta total por ciudad (modo punteros)
- * @param cityCount Output: número de ciudades procesadas
- * @return Array de doubles con riqueza neta por ciudad (debe liberarse con delete[])
+ * @brief Calculates total net wealth per city (pointer mode).
+ * @param cityCount Output: number of cities processed.
+ * @return Array of doubles with net wealth per city (must be freed with delete[]).
  */
-double* netWealthByCity_ptr(const Persona* persons, size_t n, size_t* cityCount);
+double *netWealthByCity_ptr(const Persona *persons, size_t n, size_t *cityCount);
 
 /**
- * @brief Calcula la riqueza neta total por ciudad (modo valores)
+ * @brief Calculates total net wealth per city (value mode).
  */
-double* netWealthByCity_val(const Persona persons[], size_t n, size_t* cityCount);
+double *netWealthByCity_val(const Persona persons[], size_t n, size_t *cityCount);
 
 #endif // QUERIES_CLASS_H

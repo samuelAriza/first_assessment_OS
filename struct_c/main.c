@@ -53,7 +53,7 @@ void log_person_info_val(FILE *file, const char *label, Person person)
 
 int main()
 {
-    size_t sizes[] = {10000}; // puedes añadir 10M si tu PC lo soporta
+    size_t sizes[] = {10000, 1000000, 5000000}; // puedes añadir 10M si tu PC lo soporta
     size_t n_sizes = sizeof(sizes) / sizeof(sizes[0]);
 
     BenchmarkResult results[1000]; // espacio suficiente para todos los benchmarks

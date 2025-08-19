@@ -6,72 +6,184 @@
 #include <cstring>
 #include <vector>
 
-static const char* argval(int argc, char** argv, const char* key){
+/// @brief Extracts the value of a command-line argument given its key.
+/// @param argc Number of arguments.
+/// @param argv Array of argument strings.
+/// @param key Key to search for (e.g., "--func=").
+/// @return Pointer to the value string if found, otherwise nullptr.
+static const char *argval(int argc, char **argv, const char *key)
+{
     size_t len = std::strlen(key);
-    for(int i=1;i<argc;i++){ if(std::strncmp(argv[i], key, len)==0) return argv[i]+len; }
+    for (int i = 1; i < argc; i++)
+    {
+        if (std::strncmp(argv[i], key, len) == 0)
+            return argv[i] + len;
+    }
     return nullptr;
 }
 
-int main(int argc, char** argv){
-    const char* func = argval(argc, argv, "--func=");
-    const char* mode = argval(argc, argv, "--mode="); // ptr|val
-    const char* narg = argval(argc, argv, "--n=");
-    if(!func || !mode || !narg){
+/// @brief Program entry point. Parses command-line arguments, generates
+/// a collection of @c Persona objects, executes the selected query function
+/// in the specified mode (pointer or value), and measures performance metrics.
+/// @param argc Number of command-line arguments.
+/// @param argv Array of command-line arguments.
+/// @return Exit code: 0 on success, 1 on runtime error, 2 on usage error.
+int main(int argc, char **argv)
+{
+    // Parse mandatory arguments
+    const char *func = argval(argc, argv, "--func=");
+    const char *mode = argval(argc, argv, "--mode="); // "ptr" or "val"
+    const char *narg = argval(argc, argv, "--n=");
+    if (!func || !mode || !narg)
+    {
         std::fprintf(stderr, "Usage: %s --func=<name> --mode=ptr|val --n=<size>\n", argv[0]);
         return 2;
     }
 
+    // Convert n to integer and generate collection
     size_t n = (size_t)std::strtoull(narg, nullptr, 10);
     std::vector<Persona> persons = generarColeccion((int)n);
-    if(persons.empty()){
+    if (persons.empty())
+    {
         std::fprintf(stderr, "generarColeccion failed for n=%zu\n", n);
         return 1;
     }
 
+    // Measure initial memory and time usage
     size_t rss_before = memory_rss_kb();
     size_t heap_before = memory_heap_kb();
     double wall_start = now_ms();
     double cpu_start = cpu_now_ms();
 
-    if(std::strcmp(func, "findOldest")==0){
-        if(std::strcmp(mode, "ptr")==0) (void)findOldest_ptr(persons.data(), persons.size());
-        else (void)findOldest_val(persons.data(), persons.size());
-    } else if(std::strcmp(func, "findOldestByCity")==0){
-        size_t c=0; if(std::strcmp(mode, "ptr")==0){ const Persona** r = findOldestByCity_ptr(persons.data(), persons.size(), &c); delete[] r;} else { Persona* r = findOldestByCity_val(persons.data(), persons.size(), &c); delete[] r;}
-    } else if(std::strcmp(func, "findRichest")==0){
-        if(std::strcmp(mode, "ptr")==0) (void)findRichest_ptr(persons.data(), persons.size()); else (void)findRichest_val(persons.data(), persons.size());
-    } else if(std::strcmp(func, "findRichestByCity")==0){
-        size_t c=0; if(std::strcmp(mode, "ptr")==0){ const Persona** r = findRichestByCity_ptr(persons.data(), persons.size(), &c); delete[] r;} else { Persona* r = findRichestByCity_val(persons.data(), persons.size(), &c); delete[] r;}
-    } else if(std::strcmp(func, "findRichestByGroup")==0){
-        if(std::strcmp(mode, "ptr")==0) (void)findRichestByGroup_ptr(persons.data(), persons.size(), 'A'); else (void)findRichestByGroup_val(persons.data(), persons.size(), 'A');
-    } else if(std::strcmp(func, "listTaxGroup")==0){
-        size_t c=0; if(std::strcmp(mode, "ptr")==0){ const Persona** r = listTaxGroup_ptr(persons.data(), persons.size(), 'A', &c); delete[] r;} else { Persona* r = listTaxGroup_val(persons.data(), persons.size(), 'A', &c); delete[] r;}
-    } else if(std::strcmp(func, "countTaxGroup")==0){
-        if(std::strcmp(mode, "ptr")==0) (void)countTaxGroup_ptr(persons.data(), persons.size(), 'A'); else (void)countTaxGroup_val(persons.data(), persons.size(), 'A');
-    } else if(std::strcmp(func, "cityWithHighestAvgHeritage")==0){
-        if(std::strcmp(mode, "ptr")==0){ const char* s = cityWithHighestAvgHeritage_ptr(persons.data(), persons.size()); delete[] s;} else { const char* s = cityWithHighestAvgHeritage_val(persons.data(), persons.size()); delete[] s;}
-    } else if(std::strcmp(func, "percentageOlderThanByGroup")==0){
-        if(std::strcmp(mode, "ptr")==0) (void)percentageOlderThanByGroup_ptr(persons.data(), persons.size(), 65, 'A'); else (void)percentageOlderThanByGroup_val(persons.data(), persons.size(), 65, 'A');
-    } else if(std::strcmp(func, "netWealthByCity")==0){
-        size_t c=0; if(std::strcmp(mode, "ptr")==0){ double* r = netWealthByCity_ptr(persons.data(), persons.size(), &c); delete[] r;} else { double* r = netWealthByCity_val(persons.data(), persons.size(), &c); delete[] r;}
-    } else if(std::strcmp(func, "validateTaxGroup")==0){
-        if(std::strcmp(mode, "ptr")==0) (void)validateTaxGroup_ptr(&persons[0]); else (void)validateTaxGroup_val(persons[0]);
-    } else {
+    // Dispatch to the selected benchmark function
+    if (std::strcmp(func, "findOldest") == 0)
+    {
+        if (std::strcmp(mode, "ptr") == 0)
+            (void)findOldest_ptr(persons.data(), persons.size());
+        else
+            (void)findOldest_val(persons.data(), persons.size());
+    }
+    else if (std::strcmp(func, "findOldestByCity") == 0)
+    {
+        size_t c = 0;
+        if (std::strcmp(mode, "ptr") == 0)
+        {
+            const Persona **r = findOldestByCity_ptr(persons.data(), persons.size(), &c);
+            delete[] r;
+        }
+        else
+        {
+            Persona *r = findOldestByCity_val(persons.data(), persons.size(), &c);
+            delete[] r;
+        }
+    }
+    else if (std::strcmp(func, "findRichest") == 0)
+    {
+        if (std::strcmp(mode, "ptr") == 0)
+            (void)findRichest_ptr(persons.data(), persons.size());
+        else
+            (void)findRichest_val(persons.data(), persons.size());
+    }
+    else if (std::strcmp(func, "findRichestByCity") == 0)
+    {
+        size_t c = 0;
+        if (std::strcmp(mode, "ptr") == 0)
+        {
+            const Persona **r = findRichestByCity_ptr(persons.data(), persons.size(), &c);
+            delete[] r;
+        }
+        else
+        {
+            Persona *r = findRichestByCity_val(persons.data(), persons.size(), &c);
+            delete[] r;
+        }
+    }
+    else if (std::strcmp(func, "findRichestByGroup") == 0)
+    {
+        if (std::strcmp(mode, "ptr") == 0)
+            (void)findRichestByGroup_ptr(persons.data(), persons.size(), 'A');
+        else
+            (void)findRichestByGroup_val(persons.data(), persons.size(), 'A');
+    }
+    else if (std::strcmp(func, "listTaxGroup") == 0)
+    {
+        size_t c = 0;
+        if (std::strcmp(mode, "ptr") == 0)
+        {
+            const Persona **r = listTaxGroup_ptr(persons.data(), persons.size(), 'A', &c);
+            delete[] r;
+        }
+        else
+        {
+            Persona *r = listTaxGroup_val(persons.data(), persons.size(), 'A', &c);
+            delete[] r;
+        }
+    }
+    else if (std::strcmp(func, "countTaxGroup") == 0)
+    {
+        if (std::strcmp(mode, "ptr") == 0)
+            (void)countTaxGroup_ptr(persons.data(), persons.size(), 'A');
+        else
+            (void)countTaxGroup_val(persons.data(), persons.size(), 'A');
+    }
+    else if (std::strcmp(func, "cityWithHighestAvgHeritage") == 0)
+    {
+        if (std::strcmp(mode, "ptr") == 0)
+        {
+            const char *s = cityWithHighestAvgHeritage_ptr(persons.data(), persons.size());
+            delete[] s;
+        }
+        else
+        {
+            const char *s = cityWithHighestAvgHeritage_val(persons.data(), persons.size());
+            delete[] s;
+        }
+    }
+    else if (std::strcmp(func, "percentageOlderThanByGroup") == 0)
+    {
+        if (std::strcmp(mode, "ptr") == 0)
+            (void)percentageOlderThanByGroup_ptr(persons.data(), persons.size(), 65, 'A');
+        else
+            (void)percentageOlderThanByGroup_val(persons.data(), persons.size(), 65, 'A');
+    }
+    else if (std::strcmp(func, "netWealthByCity") == 0)
+    {
+        size_t c = 0;
+        if (std::strcmp(mode, "ptr") == 0)
+        {
+            double *r = netWealthByCity_ptr(persons.data(), persons.size(), &c);
+            delete[] r;
+        }
+        else
+        {
+            double *r = netWealthByCity_val(persons.data(), persons.size(), &c);
+            delete[] r;
+        }
+    }
+    else if (std::strcmp(func, "validateTaxGroup") == 0)
+    {
+        if (std::strcmp(mode, "ptr") == 0)
+            (void)validateTaxGroup_ptr(&persons[0]);
+        else
+            (void)validateTaxGroup_val(persons[0]);
+    }
+    else
+    {
         std::fprintf(stderr, "Unknown func: %s\n", func);
         return 2;
     }
 
+    // Measure final memory and time usage
     double wall_end = now_ms();
     double cpu_end = cpu_now_ms();
     size_t rss_after = memory_rss_kb();
     size_t heap_after = memory_heap_kb();
 
+    // Print benchmark results in CSV format
     std::printf("%s,%s,%zu,%.3f,%.3f,%zu,%zu\n",
-           std::strcmp(mode,"ptr")==0?"C++ (ptr)":"C++ (val)", func, n,
-           wall_end - wall_start, cpu_end - cpu_start,
-           (heap_after>heap_before)?heap_after-heap_before:0,
-           (rss_after>rss_before)?rss_after-rss_before:0);
+                std::strcmp(mode, "ptr") == 0 ? "C++ (ptr)" : "C++ (val)", func, n,
+                wall_end - wall_start, cpu_end - cpu_start,
+                (heap_after > heap_before) ? heap_after - heap_before : 0,
+                (rss_after > rss_before) ? rss_after - rss_before : 0);
     return 0;
 }
-
-
